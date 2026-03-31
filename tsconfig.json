@@ -5,12 +5,12 @@
     "strict": true,
     "noImplicitAny": true,
     "module": "none",
-    "outDir": "dist",
+    "outDir": ".",
     "rootDir": "src",
     "typeRoots": [],
     "types": [],
     "ignoreDeprecations": "6.0"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/host.ts"],
+  "exclude": ["node_modules"]
 }

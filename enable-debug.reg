@@ -1,0 +1,16 @@
+Windows Registry Editor Version 5.00
+
+; Enables unsigned CEP extensions in all recent Adobe apps.
+; Double-click this file, confirm the UAC prompt, then restart After Effects.
+
+[HKEY_CURRENT_USER\Software\Adobe\CSXS.9]
+"PlayerDebugMode"="1"
+
+[HKEY_CURRENT_USER\Software\Adobe\CSXS.10]
+"PlayerDebugMode"="1"
+
+[HKEY_CURRENT_USER\Software\Adobe\CSXS.11]
+"PlayerDebugMode"="1"
+
+[HKEY_CURRENT_USER\Software\Adobe\CSXS.12]
+"PlayerDebugMode"="1"

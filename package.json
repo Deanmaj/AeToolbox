@@ -1,0 +1,20 @@
+{
+  "name": "aetoolbox",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "esbuild": "^0.27.4",
+    "types-for-adobe": "^7.2.5",
+    "typescript": "^6.0.2"
+  }
+}

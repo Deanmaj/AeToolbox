@@ -1,58 +1,53 @@
-/* ── Reset ───────────────────────────────────────────────────────────── */
+/* ── Reset ─────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Tokens ──────────────────────────────────────────────────────────── */
+/* ── Tokens ────────────────────────────────────────────────────────────── */
 :root {
-  --bg:         #262626;
-  --surface:    #2f2f2f;
-  --card:       #323232;
-  --border:     #454545;
-  --text:       #dedede;
-  --dim:        #888;
-  --accent:     #4e9bfe;
-  --btn-bg:     #eaeae8;
-  --btn-text:   #1e1e1e;
-  --seg-on:     #eaeae8;
-  --seg-off:    #2e2e2e;
-  --check-on:   #4e9bfe;
-  --radius:     6px;
-  --radius-btn: 20px;
-  --font:       -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-size:  12px;
+  --bg:       #1e1e1e;
+  --surface:  #282828;
+  --raised:   #313131;
+  --border:   #3e3e3e;
+  --text:     #e2e2e2;
+  --muted:    #808080;
+  --accent:   #4d9cf6;
+  --cream:    #eeedeb;
+  --cream-hv: #e0dfdd;
+  --pill:     999px;
+  --r:        6px;
+  --font:     -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ── Base ────────────────────────────────────────────────────────────── */
+/* ── Base ──────────────────────────────────────────────────────────────── */
 html, body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: var(--font-size);
+  font-size: 12px;
   line-height: 1.4;
   overflow: hidden;
-  user-select: none;
   -webkit-user-select: none;
+  user-select: none;
 }
 
-/* ── Panel ───────────────────────────────────────────────────────────── */
+/* ── Panel ─────────────────────────────────────────────────────────────── */
 .panel {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  padding: 12px;
-  gap: 8px;
+  min-height: 100vh;
+  padding: 16px;
+  gap: 16px;
   overflow-y: auto;
 }
 
-/* ── Header ──────────────────────────────────────────────────────────── */
+/* ── Header ────────────────────────────────────────────────────────────── */
 .header {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding-bottom: 2px;
+  gap: 8px;
 }
 
-.header-dot {
+.dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -60,27 +55,28 @@ html, body {
   flex-shrink: 0;
 }
 
-.header-title {
+.wordmark {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--dim);
+  letter-spacing: 0.1em;
+  color: var(--muted);
 }
 
-/* ── Tab bar ─────────────────────────────────────────────────────────── */
+/* ── Tab bar ───────────────────────────────────────────────────────────── */
 .tab-bar {
   display: flex;
   border-bottom: 1px solid var(--border);
+  margin-top: -8px;
 }
 
 .tab {
   flex: 1;
   background: none;
   border: none;
-  color: var(--dim);
+  color: var(--muted);
   font-family: var(--font);
-  font-size: var(--font-size);
-  padding: 7px 4px;
+  font-size: 12px;
+  padding: 8px 4px;
   cursor: pointer;
   position: relative;
   transition: color 0.15s;
@@ -100,68 +96,72 @@ html, body {
   left: 0;
   right: 0;
   height: 2px;
-  background: #fff;
+  background: #ffffff;
   border-radius: 1px;
 }
 
-/* ── Tab content ─────────────────────────────────────────────────────── */
+/* ── Tab content ───────────────────────────────────────────────────────── */
 .tab-content {
   display: none;
   flex-direction: column;
-  gap: 8px;
+  gap: 14px;
 }
 
 .tab-content.active { display: flex; }
 
-/* ── Section label ───────────────────────────────────────────────────── */
+/* ── Section label ─────────────────────────────────────────────────────── */
 .section-label {
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.07em;
-  color: var(--dim);
-  margin-bottom: -3px;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: -6px;
 }
 
-/* ── Segmented toggle ────────────────────────────────────────────────── */
+/* ── Segmented toggle ──────────────────────────────────────────────────── */
 .segmented {
   display: flex;
+  background: var(--surface);
+  border-radius: calc(var(--r) + 3px);
+  padding: 3px;
   gap: 3px;
 }
 
 .seg {
   flex: 1;
-  background: var(--seg-off);
+  background: transparent;
   border: none;
-  border-radius: var(--radius);
-  color: var(--dim);
+  border-radius: var(--r);
+  color: var(--muted);
   font-family: var(--font);
-  font-size: var(--font-size);
-  padding: 7px 6px;
+  font-size: 12px;
+  padding: 8px 6px;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
 
 .seg:hover:not(.active) {
-  background: #383838;
+  background: var(--raised);
   color: var(--text);
 }
 
 .seg.active {
-  background: var(--seg-on);
-  color: var(--btn-text);
+  background: var(--cream);
+  color: #1a1a1a;
   font-weight: 600;
 }
 
-/* ── Input ───────────────────────────────────────────────────────────── */
+/* ── Input ─────────────────────────────────────────────────────────────── */
 .input {
   width: 100%;
-  background: var(--card);
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--r);
   color: var(--text);
   font-family: var(--font);
-  font-size: var(--font-size);
-  padding: 6px 8px;
+  font-size: 12px;
+  padding: 8px 10px;
   outline: none;
   transition: border-color 0.15s;
 }
@@ -169,148 +169,148 @@ html, body {
 .input:focus { border-color: var(--accent); }
 
 .input:disabled {
-  opacity: 0.4;
+  opacity: 0.38;
   cursor: not-allowed;
 }
 
-.input-label {
+/* ── Field (label + input stacked) ────────────────────────────────────── */
+.field { display: flex; flex-direction: column; gap: 5px; }
+
+.field-label {
   font-size: 10px;
-  color: var(--dim);
-  margin-bottom: 4px;
+  color: var(--muted);
 }
 
-/* ── Two-column row ──────────────────────────────────────────────────── */
+/* ── Two-column grid ───────────────────────────────────────────────────── */
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 10px;
 }
 
-.col { display: flex; flex-direction: column; }
-
-/* ── Checkbox ────────────────────────────────────────────────────────── */
+/* ── Checkbox ──────────────────────────────────────────────────────────── */
 .check-row {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 9px;
   cursor: pointer;
 }
 
-.check-row span:last-child { color: var(--text); font-size: var(--font-size); }
+.check-label {
+  color: var(--text);
+  font-size: 12px;
+}
 
 .checkbox {
   width: 16px;
   height: 16px;
-  border-radius: 3px;
+  border-radius: 4px;
   border: 1.5px solid var(--border);
-  background: var(--card);
+  background: var(--surface);
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.12s, border-color 0.12s;
   position: relative;
+  transition: background 0.12s, border-color 0.12s;
 }
 
 .checkbox.checked {
-  background: var(--check-on);
-  border-color: var(--check-on);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 .checkbox.checked::after {
   content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
   width: 4px;
-  height: 7px;
+  height: 8px;
   border: 2px solid #fff;
   border-top: none;
   border-left: none;
-  transform: rotate(45deg) translate(-1px, -1px);
-  position: absolute;
+  transform: rotate(45deg);
 }
 
-/* ── Card ────────────────────────────────────────────────────────────── */
+/* ── Card ──────────────────────────────────────────────────────────────── */
 .card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 9px 10px;
-  color: var(--dim);
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 11px 13px;
+  color: var(--muted);
   font-size: 11px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-/* ── Separator ───────────────────────────────────────────────────────── */
+/* ── Separator ─────────────────────────────────────────────────────────── */
 .sep {
   height: 1px;
   background: var(--border);
-  border-radius: 1px;
 }
 
-/* ── Action button ───────────────────────────────────────────────────── */
+/* ── Action button ─────────────────────────────────────────────────────── */
 .btn {
   width: 100%;
-  background: var(--btn-bg);
+  background: var(--cream);
   border: none;
-  border-radius: var(--radius-btn);
-  color: var(--btn-text);
-  font-family: var(--font);
-  font-size: var(--font-size);
-  font-weight: 500;
-  padding: 9px;
-  cursor: pointer;
-  transition: background 0.15s, opacity 0.15s;
-}
-
-.btn:hover   { background: #f0f0ee; }
-.btn:active  { background: #dcdcda; }
-
-/* ── Direction pad ───────────────────────────────────────────────────── */
-.dir-pad {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-}
-
-.dir-row {
-  display: flex;
-  gap: 3px;
-}
-
-.dir-row.center { justify-content: center; }
-
-.dir-btn {
-  width: 32px;
-  height: 26px;
-  background: var(--seg-off);
-  border: 1px solid transparent;
-  border-radius: 4px;
-  color: var(--dim);
+  border-radius: var(--pill);
+  color: #1a1a1a;
   font-family: var(--font);
   font-size: 13px;
+  font-weight: 500;
+  padding: 11px;
   cursor: pointer;
-  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  transition: background 0.15s;
+}
+
+.btn:hover  { background: var(--cream-hv); }
+.btn:active { background: #d0cfcd; }
+
+/* ── Subgroup (pos-controls inner wrapper) ─────────────────────────────── */
+.subgroup {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Direction pad ─────────────────────────────────────────────────────── */
+.dir-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 34px);
+  grid-template-rows: repeat(3, 34px);
+  gap: 4px;
   justify-content: center;
 }
 
+.dir-cell { /* empty grid spacer */ }
+
+.dir-btn {
+  width: 34px;
+  height: 34px;
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: var(--r);
+  color: var(--muted);
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
 .dir-btn:hover:not(.active) {
-  background: #383838;
+  background: var(--raised);
   color: var(--text);
 }
 
 .dir-btn.active {
-  background: var(--card);
+  background: var(--raised);
   border-color: var(--border);
   color: var(--text);
 }
 
-/* ── Disabled group ──────────────────────────────────────────────────── */
+/* ── Disabled group ────────────────────────────────────────────────────── */
 .disabled-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  opacity: 0.4;
+  opacity: 0.38;
   pointer-events: none;
 }
 
@@ -319,7 +319,7 @@ html, body {
   pointer-events: auto;
 }
 
-/* ── Scrollbar ───────────────────────────────────────────────────────── */
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }

@@ -10,19 +10,82 @@
 
     <!-- Header -->
     <div class="header">
-      <span class="header-dot"></span>
-      <span class="header-title">AE TOOLBOX</span>
+      <span class="dot"></span>
+      <span class="wordmark">AE TOOLBOX</span>
     </div>
 
     <!-- Tab bar -->
     <div class="tab-bar">
-      <button class="tab active" data-tab="0">Assign null</button>
-      <button class="tab"        data-tab="1">Precomp</button>
-      <button class="tab"        data-tab="2">Move</button>
+      <button class="tab active" data-tab="0">Mover</button>
+      <button class="tab"        data-tab="1">Null</button>
+      <button class="tab"        data-tab="2">Precomp</button>
     </div>
 
-    <!-- ── Tab 1: Assign Null ───────────────────────────────── -->
+    <!-- ── Mover ─────────────────────────────────────────────── -->
     <div class="tab-content active" id="tab-0">
+
+      <label class="check-row">
+        <span class="checkbox checked" id="pos-box"></span>
+        <span class="check-label">Position</span>
+      </label>
+
+      <div id="pos-controls" class="subgroup">
+
+        <div class="dir-pad">
+          <div class="dir-cell"></div>
+          <button class="dir-btn" data-dir="up">&#8593;</button>
+          <div class="dir-cell"></div>
+          <button class="dir-btn" data-dir="left">&#8592;</button>
+          <div class="dir-cell"></div>
+          <button class="dir-btn active" data-dir="right">&#8594;</button>
+          <div class="dir-cell"></div>
+          <button class="dir-btn" data-dir="down">&#8595;</button>
+          <div class="dir-cell"></div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <div class="field-label">Distance</div>
+            <input class="input" id="distance" type="text" value="50">
+          </div>
+          <div class="field">
+            <div class="field-label">Frames</div>
+            <input class="input" id="pos-frames" type="text" value="10">
+          </div>
+        </div>
+
+        <label class="check-row">
+          <span class="checkbox checked" id="displace-box"></span>
+          <span class="check-label">Displace</span>
+        </label>
+
+      </div>
+
+      <div class="sep"></div>
+
+      <label class="check-row">
+        <span class="checkbox" id="op-box"></span>
+        <span class="check-label">Opacity</span>
+      </label>
+
+      <div id="op-controls" class="subgroup disabled-group">
+        <div class="segmented" id="op-mode-toggle">
+          <button class="seg active" data-index="0">0 &#8594; 100</button>
+          <button class="seg"        data-index="1">100 &#8594; 0</button>
+        </div>
+        <div class="field">
+          <div class="field-label">Frames</div>
+          <input class="input" id="op-frames" type="text" value="10">
+        </div>
+      </div>
+
+      <div class="sep"></div>
+      <button class="btn" id="apply-btn">Apply</button>
+
+    </div>
+
+    <!-- ── Null ──────────────────────────────────────────────── -->
+    <div class="tab-content" id="tab-1">
 
       <div class="section-label">MODE</div>
       <div class="segmented" id="mode-toggle">
@@ -36,7 +99,7 @@
       <div class="section-label">OPTIONS</div>
       <label class="check-row">
         <span class="checkbox checked" id="skip-nulls-box"></span>
-        <span>Skip null layers</span>
+        <span class="check-label">Skip null layers</span>
       </label>
 
       <div class="card" id="assign-desc">
@@ -48,8 +111,8 @@
 
     </div>
 
-    <!-- ── Tab 2: Precomp ──────────────────────────────────── -->
-    <div class="tab-content" id="tab-1">
+    <!-- ── Precomp ────────────────────────────────────────────── -->
+    <div class="tab-content" id="tab-2">
 
       <div class="card">
         Precomps each selected layer into its own composition,
@@ -57,66 +120,6 @@
       </div>
       <div class="sep"></div>
       <button class="btn" id="precomp-btn">Precomp individually</button>
-
-    </div>
-
-    <!-- ── Tab 3: Move & Opacity ───────────────────────────── -->
-    <div class="tab-content" id="tab-2">
-
-      <label class="check-row">
-        <span class="checkbox checked" id="pos-box"></span>
-        <span>Position</span>
-      </label>
-
-      <div id="pos-controls">
-        <div class="dir-pad">
-          <div class="dir-row center">
-            <button class="dir-btn" data-dir="up">&#94;</button>
-          </div>
-          <div class="dir-row center">
-            <button class="dir-btn"        data-dir="left">&lt;</button>
-            <button class="dir-btn active" data-dir="right">&gt;</button>
-          </div>
-          <div class="dir-row center">
-            <button class="dir-btn" data-dir="down">v</button>
-          </div>
-        </div>
-
-        <div class="two-col">
-          <div class="col">
-            <div class="input-label">Distance</div>
-            <input class="input" id="distance"   type="text" value="50">
-          </div>
-          <div class="col">
-            <div class="input-label">Frames</div>
-            <input class="input" id="pos-frames" type="text" value="10">
-          </div>
-        </div>
-
-        <label class="check-row">
-          <span class="checkbox checked" id="displace-box"></span>
-          <span>Displace</span>
-        </label>
-      </div>
-
-      <div class="sep"></div>
-
-      <label class="check-row">
-        <span class="checkbox" id="op-box"></span>
-        <span>Opacity</span>
-      </label>
-
-      <div id="op-controls" class="disabled-group">
-        <div class="segmented" id="op-mode-toggle">
-          <button class="seg active" data-index="0">0&#8594;100</button>
-          <button class="seg"        data-index="1">100&#8594;0</button>
-        </div>
-        <div class="input-label">Frames</div>
-        <input class="input" id="op-frames" type="text" value="10">
-      </div>
-
-      <div class="sep"></div>
-      <button class="btn" id="apply-btn">Apply</button>
 
     </div>
 

@@ -1,5 +1,4 @@
 var __panelThis = this;
-"use strict";
 /// <reference path="./ae.d.ts" />
 // ─────────────────────────────────────────────────────────────────────────────
 // Palette

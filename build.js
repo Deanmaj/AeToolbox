@@ -19,7 +19,8 @@ const files = fs.readdirSync(distDir).filter(f => f.endsWith(".js"));
 for (const file of files) {
     const jsPath  = path.join(distDir, file);
     const jsxPath = path.join(distDir, file.replace(/\.js$/, ".jsx"));
-    const content = "var __panelThis = this;\n" + fs.readFileSync(jsPath, "utf8");
+    const content = "var __panelThis = this;\n" +
+        fs.readFileSync(jsPath, "utf8").replace(/^["']use strict["'];?\s*/m, "");
     fs.writeFileSync(jsxPath, content);
     fs.unlinkSync(jsPath);
 }

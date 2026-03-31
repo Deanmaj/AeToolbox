@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2015",
+    "target": "ES5",
     "lib": [],
     "strict": true,
     "noImplicitAny": true,
-    "moduleResolution": "bundler",
-    "ignoreDeprecations": "6.0",
+    "module": "none",
     "outDir": "dist",
     "rootDir": "src",
-    "noEmit": true,
     "typeRoots": [],
-    "types": []
+    "types": [],
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

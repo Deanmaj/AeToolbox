@@ -1,36 +1,36 @@
 var __panelThis = this;
 /// <reference path="./ae.d.ts" />
 // ─────────────────────────────────────────────────────────────────────────────
-// Palette
+// Palette  (plain arrays — no lib types needed)
 // ─────────────────────────────────────────────────────────────────────────────
-var C = {
-    bg: [0.149, 0.149, 0.149, 1],
-    card: [0.196, 0.196, 0.196, 1],
-    border: [0.275, 0.275, 0.275, 1],
-    text: [0.867, 0.867, 0.867, 1],
-    dim: [0.467, 0.467, 0.467, 1],
-    accent: [0.302, 0.600, 1.000, 1],
-    btnBg: [0.918, 0.918, 0.902, 1],
-    btnText: [0.118, 0.118, 0.118, 1],
-    segOn: [0.918, 0.918, 0.902, 1],
-    white: [1.000, 1.000, 1.000, 1],
-    check: [0.302, 0.600, 1.000, 1],
-};
+var BG = [0.149, 0.149, 0.149, 1];
+var CARD = [0.196, 0.196, 0.196, 1];
+var BORDER = [0.255, 0.255, 0.255, 1];
+var TEXT = [0.867, 0.867, 0.867, 1];
+var DIM = [0.467, 0.467, 0.467, 1];
+var ACCENT = [0.302, 0.600, 1.000, 1];
+var BTN_BG = [0.918, 0.918, 0.902, 1];
+var BTN_TEXT = [0.118, 0.118, 0.118, 1];
+var SEG_ON = [0.918, 0.918, 0.902, 1];
+var SEG_OFF = [0.220, 0.220, 0.220, 1];
+var WHITE = [1.000, 1.000, 1.000, 1];
+var CHECK = [0.302, 0.600, 1.000, 1];
 // ─────────────────────────────────────────────────────────────────────────────
-// Layout constants
+// Layout
 // ─────────────────────────────────────────────────────────────────────────────
 var PAD = 12;
 var GAP = 8;
 var SGAP = 6;
-var BTN_H = 32;
-var TAB_H = 32;
-var SEG_H = 32;
-var INPUT_H = 26;
+var BTN_H = 30;
+var TAB_H = 30;
+var SEG_H = 28;
+var INPUT_H = 24;
 // ─────────────────────────────────────────────────────────────────────────────
 // Drawing helpers
 // ─────────────────────────────────────────────────────────────────────────────
-function drawRoundRect(g, brush, w, h, r) {
+function fillRoundRect(g, color, w, h, r) {
     var d = r * 2;
+    var brush = g.newBrush(g.BrushType.SOLID_COLOR, color);
     g.newPath();
     g.ellipsePath(0, 0, d, d);
     g.fillPath(brush);
@@ -50,71 +50,76 @@ function drawRoundRect(g, brush, w, h, r) {
     g.rectPath(0, r, w, h - d);
     g.fillPath(brush);
 }
+function fillRect(g, color, x, y, w, h) {
+    var brush = g.newBrush(g.BrushType.SOLID_COLOR, color);
+    g.newPath();
+    g.rectPath(x, y, w, h);
+    g.fillPath(brush);
+}
+function drawText(g, text, color, x, y, font) {
+    var pen = g.newPen(g.PenType.SOLID_COLOR, color, 1);
+    if (font)
+        g.drawString(text, pen, x, y, font);
+    else
+        g.drawString(text, pen, x, y);
+}
 // ─────────────────────────────────────────────────────────────────────────────
 // Controls
 // ─────────────────────────────────────────────────────────────────────────────
 function PanelHeader(parent) {
     var hdr = parent.add("customView", undefined, "");
-    hdr.preferredSize = [-1, 28];
+    hdr.preferredSize = [-1, 26];
     hdr.onDraw = function () {
         var g = this.graphics;
         var sz = this.size;
-        // background
-        var bgBrush = g.newBrush(g.BrushType.SOLID_COLOR, C.bg);
-        g.newPath();
-        g.rectPath(0, 0, sz.width, sz.height);
-        g.fillPath(bgBrush);
+        var fnt = ScriptUI.newFont("dialog", "BOLD", 10);
+        fillRect(g, BG, 0, 0, sz.width, sz.height);
         // blue dot
-        var dotBrush = g.newBrush(g.BrushType.SOLID_COLOR, C.accent);
+        var dot = g.newBrush(g.BrushType.SOLID_COLOR, ACCENT);
         g.newPath();
-        g.ellipsePath(0, (sz.height - 8) / 2, 8, 8);
-        g.fillPath(dotBrush);
+        g.ellipsePath(0, (sz.height - 7) / 2, 7, 7);
+        g.fillPath(dot);
         // title
-        var font = ScriptUI.newFont("dialog", "BOLD", 10);
-        var textPen = g.newPen(g.PenType.SOLID_COLOR, C.dim, 1);
-        var ts = g.measureString("AE TOOLBOX", font);
-        g.drawString("AE TOOLBOX", textPen, 14, (sz.height - ts.height) / 2, font);
+        drawText(g, "AE TOOLBOX", DIM, 13, (sz.height - g.measureString("AE TOOLBOX", fnt).height) / 2, fnt);
     };
 }
 function SectionLabel(parent, text) {
     var lbl = parent.add("statictext", undefined, text);
     lbl.graphics.font = ScriptUI.newFont("dialog", "BOLD", 9);
-    lbl.graphics.foregroundColor = lbl.graphics.newPen(lbl.graphics.PenType.SOLID_COLOR, C.dim, 1);
+    lbl.graphics.foregroundColor = lbl.graphics.newPen(lbl.graphics.PenType.SOLID_COLOR, DIM, 1);
 }
 function Separator(parent) {
     var sep = parent.add("customView", undefined, "");
     sep.preferredSize = [-1, 1];
     sep.onDraw = function () {
         var g = this.graphics;
-        var pen = g.newPen(g.PenType.SOLID_COLOR, C.border, 1);
+        var pen = g.newPen(g.PenType.SOLID_COLOR, BORDER, 1);
         g.newPath();
         g.moveTo(0, 0);
         g.lineTo(this.size.width, 0);
         g.strokePath(pen);
     };
 }
-// Light-style button (cream bg, dark text)
+// Light cream action button
 function CustomButton(parent, text) {
     var btn = parent.add("customButton", undefined, "");
     btn.preferredSize = [-1, BTN_H];
     btn.text = text;
-    function redraw(hover) {
-        var g = btn.graphics;
-        var bgColor = hover ? [0.96, 0.96, 0.95, 1] : C.btnBg;
-        var fill = g.newBrush(g.BrushType.SOLID_COLOR, bgColor);
-        var pen = g.newPen(g.PenType.SOLID_COLOR, C.btnText, 1);
-        btn.onDraw = function () {
-            var sz = this.size;
-            var ts = g.measureString(btn.text);
-            drawRoundRect(g, fill, sz.width, sz.height, 14);
-            g.drawString(btn.text, pen, (sz.width - ts.width) / 2, (sz.height - ts.height) / 2);
-        };
-    }
-    redraw(false);
-    btn.addEventListener("mouseover", function () { redraw(true); btn.notify("onDraw"); });
-    btn.addEventListener("mouseout", function () { redraw(false); btn.notify("onDraw"); });
+    btn._hovered = false;
+    btn.onDraw = function () {
+        var g = this.graphics;
+        var sz = this.size;
+        var bg = btn._hovered ? [0.96, 0.96, 0.95, 1] : BTN_BG;
+        var fnt = ScriptUI.newFont("dialog", "REGULAR", 11);
+        var ts = g.measureString(btn.text, fnt);
+        fillRoundRect(g, bg, sz.width, sz.height, 12);
+        drawText(g, btn.text, BTN_TEXT, (sz.width - ts.width) / 2, (sz.height - ts.height) / 2, fnt);
+    };
+    btn.addEventListener("mouseover", function () { btn._hovered = true; btn.notify("onDraw"); });
+    btn.addEventListener("mouseout", function () { btn._hovered = false; btn.notify("onDraw"); });
     return btn;
 }
+// Custom checkbox  (box + label)
 function CustomCheckbox(parent, text, defaultChecked) {
     var grp = parent.add("group");
     grp.orientation = "row";
@@ -124,40 +129,37 @@ function CustomCheckbox(parent, text, defaultChecked) {
     var box = grp.add("customButton", undefined, "");
     box.preferredSize = [16, 16];
     box._checked = defaultChecked;
+    box.onDraw = function () {
+        var g = this.graphics;
+        var sz = this.size;
+        fillRoundRect(g, box._checked ? CHECK : CARD, sz.width, sz.height, 3);
+        if (!box._checked) {
+            var bpen = g.newPen(g.PenType.SOLID_COLOR, BORDER, 1);
+            g.newPath();
+            g.rectPath(0.5, 0.5, sz.width - 1, sz.height - 1);
+            g.strokePath(bpen);
+        }
+        if (box._checked) {
+            var cpen = g.newPen(g.PenType.SOLID_COLOR, WHITE, 2);
+            g.newPath();
+            g.moveTo(3, 8);
+            g.lineTo(6, 12);
+            g.lineTo(13, 4);
+            g.strokePath(cpen);
+        }
+    };
     var lbl = grp.add("statictext", undefined, text);
-    lbl.graphics.foregroundColor = lbl.graphics.newPen(lbl.graphics.PenType.SOLID_COLOR, C.text, 1);
-    function redraw() {
-        var g = box.graphics;
-        var bgBrush = g.newBrush(g.BrushType.SOLID_COLOR, box._checked ? C.check : C.card);
-        var checkPen = g.newPen(g.PenType.SOLID_COLOR, C.white, 2);
-        box.onDraw = function () {
-            var sz = this.size;
-            drawRoundRect(g, bgBrush, sz.width, sz.height, 3);
-            if (box._checked) {
-                g.newPath();
-                g.moveTo(3, 8);
-                g.lineTo(6, 12);
-                g.lineTo(13, 3);
-                g.strokePath(checkPen);
-            }
-        };
-    }
+    lbl.graphics.foregroundColor = lbl.graphics.newPen(lbl.graphics.PenType.SOLID_COLOR, TEXT, 1);
     function toggle() {
         box._checked = !box._checked;
-        redraw();
         box.notify("onDraw");
         if (grp.onValueChange)
             grp.onValueChange();
     }
     box.onClick = toggle;
     lbl.onClick = toggle;
-    redraw();
     grp.getValue = function () { return box._checked; };
-    grp.setValue = function (v) {
-        box._checked = v;
-        redraw();
-        box.notify("onDraw");
-    };
+    grp.setValue = function (v) { box._checked = v; box.notify("onDraw"); };
     return grp;
 }
 // Full-width segmented toggle
@@ -172,29 +174,25 @@ function SegmentedToggle(parent, labels, defaultIdx) {
             var seg = grp.add("customButton", undefined, "");
             seg.preferredSize = [-1, SEG_H];
             seg.text = labels[idx];
-            function redraw() {
-                var g = seg.graphics;
+            seg.onDraw = function () {
+                var g = this.graphics;
+                var sz = this.size;
                 var on = grp._selected === idx;
-                var fill = g.newBrush(g.BrushType.SOLID_COLOR, on ? C.segOn : C.card);
-                var pen = g.newPen(g.PenType.SOLID_COLOR, on ? C.btnText : C.dim, 1);
-                seg.onDraw = function () {
-                    var sz = this.size;
-                    var ts = g.measureString(seg.text);
-                    drawRoundRect(g, fill, sz.width, sz.height, 6);
-                    g.drawString(seg.text, pen, (sz.width - ts.width) / 2, (sz.height - ts.height) / 2);
-                };
-            }
+                var bg = on ? SEG_ON : SEG_OFF;
+                var fg = on ? BTN_TEXT : DIM;
+                var fnt = ScriptUI.newFont("dialog", on ? "BOLD" : "REGULAR", 11);
+                var ts = g.measureString(seg.text, fnt);
+                fillRoundRect(g, bg, sz.width, sz.height, 5);
+                drawText(g, seg.text, fg, (sz.width - ts.width) / 2, (sz.height - ts.height) / 2, fnt);
+            };
             seg.onClick = function () {
                 grp._selected = idx;
                 for (var j = 0; j < grp._btns.length; j++) {
-                    grp._btns[j]._redraw();
                     grp._btns[j].notify("onDraw");
                 }
                 if (grp.onChange)
                     grp.onChange();
             };
-            seg._redraw = redraw;
-            redraw();
             grp._btns.push(seg);
         })(i);
     }
@@ -202,29 +200,36 @@ function SegmentedToggle(parent, labels, defaultIdx) {
     grp.setValue = function (idx) {
         grp._selected = idx;
         for (var j = 0; j < grp._btns.length; j++) {
-            grp._btns[j]._redraw();
             grp._btns[j].notify("onDraw");
         }
     };
     return grp;
 }
-// Description text inside a slightly lighter card
+// Description text card
 function DescCard(parent, text) {
-    var card = parent.add("group");
-    card.orientation = "column";
-    card.alignChildren = ["fill", "top"];
-    card.margins = [8, 8, 8, 8];
-    card.spacing = 0;
-    card.graphics.backgroundColor = card.graphics.newBrush(card.graphics.BrushType.SOLID_COLOR, C.card);
-    var txt = card.add("statictext", undefined, text, { multiline: true });
-    txt.graphics.foregroundColor = txt.graphics.newPen(txt.graphics.PenType.SOLID_COLOR, C.dim, 1);
+    var wrap = parent.add("group");
+    wrap.orientation = "stack";
+    wrap.alignment = ["fill", "top"];
+    wrap.alignChildren = ["fill", "top"];
+    var bg = wrap.add("customView", undefined, "");
+    bg.preferredSize = [-1, 1];
+    bg.onDraw = function () {
+        fillRoundRect(this.graphics, CARD, this.size.width, this.size.height, 5);
+    };
+    var inner = wrap.add("group");
+    inner.orientation = "column";
+    inner.alignChildren = ["fill", "top"];
+    inner.margins = [8, 8, 8, 8];
+    inner.spacing = 0;
+    var txt = inner.add("statictext", undefined, text, { multiline: true });
+    txt.graphics.foregroundColor = txt.graphics.newPen(txt.graphics.PenType.SOLID_COLOR, DIM, 1);
     return txt;
 }
 function StyledInput(parent, defaultText, w) {
     var inp = parent.add("edittext", undefined, defaultText);
     inp.preferredSize = [w, INPUT_H];
-    inp.graphics.backgroundColor = inp.graphics.newBrush(inp.graphics.BrushType.SOLID_COLOR, C.card);
-    inp.graphics.foregroundColor = inp.graphics.newPen(inp.graphics.PenType.SOLID_COLOR, C.text, 1);
+    inp.graphics.backgroundColor = inp.graphics.newBrush(inp.graphics.BrushType.SOLID_COLOR, CARD);
+    inp.graphics.foregroundColor = inp.graphics.newPen(inp.graphics.PenType.SOLID_COLOR, TEXT, 1);
     return inp;
 }
 function DirectionPad(parent) {
@@ -240,66 +245,55 @@ function DirectionPad(parent) {
     function makeDirBtn(row, dir) {
         var btn = row.add("customButton", undefined, "");
         btn.preferredSize = [30, 24];
-        function redraw() {
-            var g = btn.graphics;
+        btn.onDraw = function () {
+            var g = this.graphics;
+            var sz = this.size;
             var on = active === dir;
-            var fill = g.newBrush(g.BrushType.SOLID_COLOR, on ? C.card : C.bg);
-            var pen = g.newPen(g.PenType.SOLID_COLOR, on ? C.text : C.dim, 1);
-            var bordPen = g.newPen(g.PenType.SOLID_COLOR, C.border, 1);
-            btn.onDraw = function () {
-                var sz = this.size;
-                var ts = g.measureString(ARROWS[dir]);
-                drawRoundRect(g, fill, sz.width, sz.height, 4);
-                if (on) {
-                    // draw border for active state
-                    g.newPath();
-                    g.rectPath(0.5, 0.5, sz.width - 1, sz.height - 1);
-                    g.strokePath(bordPen);
-                }
-                g.drawString(ARROWS[dir], pen, (sz.width - ts.width) / 2, (sz.height - ts.height) / 2);
-            };
-        }
+            var bg = on ? CARD : BG;
+            var fg = on ? TEXT : DIM;
+            var fnt = ScriptUI.newFont("dialog", "REGULAR", 11);
+            var ts = g.measureString(ARROWS[dir], fnt);
+            fillRoundRect(g, bg, sz.width, sz.height, 4);
+            if (on) {
+                var bpen = g.newPen(g.PenType.SOLID_COLOR, BORDER, 1);
+                g.newPath();
+                g.rectPath(0.5, 0.5, sz.width - 1, sz.height - 1);
+                g.strokePath(bpen);
+            }
+            drawText(g, ARROWS[dir], fg, (sz.width - ts.width) / 2, (sz.height - ts.height) / 2, fnt);
+        };
         btn.onClick = function () {
             active = dir;
             for (var i = 0; i < DIRS.length; i++) {
                 var d = DIRS[i];
-                if (btns[d]) {
-                    btns[d]._redraw();
+                if (btns[d])
                     btns[d].notify("onDraw");
-                }
             }
             if (wrap.onChange)
                 wrap.onChange();
         };
-        btn._redraw = redraw;
-        redraw();
         btns[dir] = btn;
     }
     var r1 = wrap.add("group");
     r1.orientation = "row";
     r1.spacing = 3;
-    r1.alignment = ["center", "center"];
     makeDirBtn(r1, "up");
     var r2 = wrap.add("group");
     r2.orientation = "row";
     r2.spacing = 3;
-    r2.alignment = ["center", "center"];
     makeDirBtn(r2, "left");
     makeDirBtn(r2, "right");
     var r3 = wrap.add("group");
     r3.orientation = "row";
     r3.spacing = 3;
-    r3.alignment = ["center", "center"];
     makeDirBtn(r3, "down");
     wrap.getValue = function () { return active; };
     wrap.setValue = function (d) {
         active = d;
         for (var i = 0; i < DIRS.length; i++) {
             var dir = DIRS[i];
-            if (btns[dir]) {
-                btns[dir]._redraw();
+            if (btns[dir])
                 btns[dir].notify("onDraw");
-            }
         }
     };
     return wrap;
@@ -407,10 +401,7 @@ function runShared(comp, layers, nullName, skipNullLayers) {
     var created = 0;
     if (!n) {
         var pos = averagePosition(actionable);
-        var inPt = earliestIn(actionable);
-        var outPt = latestOut(actionable);
-        var threeD = any3D(actionable);
-        n = makeNull(comp, nullName, pos, inPt, outPt, threeD);
+        n = makeNull(comp, nullName, pos, earliestIn(actionable), latestOut(actionable), any3D(actionable));
         var topLayer = actionable[0];
         for (var j = 1; j < actionable.length; j++) {
             if (actionable[j].index < topLayer.index)
@@ -428,65 +419,53 @@ function runShared(comp, layers, nullName, skipNullLayers) {
 // Tab 2 Logic: Precomp
 // ─────────────────────────────────────────────────────────────────────────────
 function runPrecomp(comp) {
-    var selectedLayers = comp.selectedLayers;
-    if (selectedLayers.length === 0) {
-        alert("No layers are selected. Please select at least one layer.");
+    var sel = comp.selectedLayers;
+    if (sel.length === 0) {
+        alert("Select at least one layer.");
         return;
     }
     app.beginUndoGroup("Precomp Selected Layers Individually");
-    var compDuration = comp.duration;
-    var layerData = [];
-    for (var i = 0; i < selectedLayers.length; i++) {
-        var layer = selectedLayers[i];
-        layerData.push({
-            layer: layer,
-            name: layer.name,
-            index: layer.index,
-            inPoint: layer.inPoint,
-            outPoint: layer.outPoint,
-        });
+    var data = [];
+    for (var i = 0; i < sel.length; i++) {
+        data.push({ layer: sel[i], name: sel[i].name, index: sel[i].index, inPoint: sel[i].inPoint, outPoint: sel[i].outPoint });
     }
-    for (var j = 0; j < layerData.length; j++) {
-        var data = layerData[j];
-        var lyr = data.layer;
-        for (var k = 0; k < comp.numLayers; k++) {
+    for (var j = 0; j < data.length; j++) {
+        var d = data[j];
+        for (var k = 0; k < comp.numLayers; k++)
             comp.layer(k + 1).selected = false;
-        }
-        lyr.selected = true;
-        var precompDuration = data.outPoint - data.inPoint;
-        if (precompDuration <= 0)
-            precompDuration = compDuration;
-        comp.layers.precompose([lyr.index], data.name, true);
-        var newPrecomp = null;
+        d.layer.selected = true;
+        var dur = d.outPoint - d.inPoint;
+        if (dur <= 0)
+            dur = comp.duration;
+        comp.layers.precompose([d.layer.index], d.name, true);
+        var newComp = null;
         for (var p = 1; p <= app.project.numItems; p++) {
             var item = app.project.item(p);
-            if (item instanceof CompItem && item.name === data.name && item !== comp) {
-                if (newPrecomp === null || item.id > newPrecomp.id) {
-                    newPrecomp = item;
-                }
+            if (item instanceof CompItem && item.name === d.name && item !== comp) {
+                if (newComp === null || item.id > newComp.id)
+                    newComp = item;
             }
         }
-        if (newPrecomp !== null && precompDuration > 0) {
-            newPrecomp.duration = precompDuration;
-        }
+        if (newComp !== null && dur > 0)
+            newComp.duration = dur;
     }
     app.endUndoGroup();
-    alert("Done!\n" + layerData.length + " layer(s) precomped individually.");
+    alert("Done!\n" + data.length + " layer(s) precomped individually.");
 }
 // ─────────────────────────────────────────────────────────────────────────────
 // Tab 3 Logic: Move & Opacity
 // ─────────────────────────────────────────────────────────────────────────────
 function computeOffset(original, dir, dis, opposite) {
-    var result = original.slice();
+    var r = original.slice();
     if (dir === "left")
-        result[0] = opposite ? result[0] + dis : result[0] - dis;
+        r[0] = opposite ? r[0] + dis : r[0] - dis;
     if (dir === "right")
-        result[0] = opposite ? result[0] - dis : result[0] + dis;
+        r[0] = opposite ? r[0] - dis : r[0] + dis;
     if (dir === "up")
-        result[1] = opposite ? result[1] + dis : result[1] - dis;
+        r[1] = opposite ? r[1] + dis : r[1] - dis;
     if (dir === "down")
-        result[1] = opposite ? result[1] - dis : result[1] + dis;
-    return result;
+        r[1] = opposite ? r[1] - dis : r[1] + dis;
+    return r;
 }
 function applyMoveOp(opts) {
     var comp = app.project.activeItem;
@@ -503,39 +482,33 @@ function applyMoveOp(opts) {
     app.beginUndoGroup("Move & Opacity");
     for (var i = 0; i < sel.length; i++) {
         var layer = sel[i];
-        // ── Position ──────────────────────────────────────────
         if (opts.makePos) {
-            var endTimePos = t + (opts.frs / comp.frameRate);
-            var posProp = layer.property("ADBE Transform Group")
-                .property("ADBE Position");
-            var original;
+            var endPos = t + (opts.frs / comp.frameRate);
+            var posProp = layer.property("ADBE Transform Group").property("ADBE Position");
+            var orig;
             try {
-                original = posProp.valueAtTime(t, false);
+                orig = posProp.valueAtTime(t, false);
             }
             catch (e) {
-                original = posProp.value;
+                orig = posProp.value;
             }
             if (opts.displaceFirst) {
-                var displaced = computeOffset(original, opts.posDir, opts.dis, true);
-                posProp.setValueAtTime(t, displaced);
-                posProp.setValueAtTime(endTimePos, original);
+                posProp.setValueAtTime(t, computeOffset(orig, opts.posDir, opts.dis, true));
+                posProp.setValueAtTime(endPos, orig);
             }
             else {
-                var moved = computeOffset(original, opts.posDir, opts.dis, false);
-                posProp.setValueAtTime(t, original);
-                posProp.setValueAtTime(endTimePos, moved);
+                posProp.setValueAtTime(t, orig);
+                posProp.setValueAtTime(endPos, computeOffset(orig, opts.posDir, opts.dis, false));
             }
             posProp.selected = true;
         }
-        // ── Opacity ───────────────────────────────────────────
         if (opts.makeOp) {
-            var endTimeOp = t + (opts.opFrs / comp.frameRate);
-            var opProp = layer.property("ADBE Transform Group")
-                .property("ADBE Opacity");
-            var startOp = opts.opMode === 1 ? 100 : 0;
-            var endOp = opts.opMode === 1 ? 0 : 100;
-            opProp.setValueAtTime(t, startOp);
-            opProp.setValueAtTime(endTimeOp, endOp);
+            var endOp = t + (opts.opFrs / comp.frameRate);
+            var opProp = layer.property("ADBE Transform Group").property("ADBE Opacity");
+            var s = opts.opMode === 1 ? 100 : 0;
+            var e = opts.opMode === 1 ? 0 : 100;
+            opProp.setValueAtTime(t, s);
+            opProp.setValueAtTime(endOp, e);
         }
     }
     app.endUndoGroup();
@@ -550,29 +523,28 @@ function buildUI(thisObj) {
     win.orientation = "column";
     win.alignChildren = ["fill", "top"];
     win.margins = [PAD, PAD, PAD, PAD];
-    win.spacing = 0;
-    win.graphics.backgroundColor = win.graphics.newBrush(win.graphics.BrushType.SOLID_COLOR, C.bg);
-    // ── Header ─────────────────────────────────────────────────────────────────
+    win.spacing = GAP;
+    win.graphics.backgroundColor = win.graphics.newBrush(win.graphics.BrushType.SOLID_COLOR, BG);
+    // ── Header ────────────────────────────────────────────────────────────────
     PanelHeader(win);
-    // ── Tab bar ────────────────────────────────────────────────────────────────
+    // ── Tab bar ───────────────────────────────────────────────────────────────
     var tabBar = win.add("group");
     tabBar.orientation = "row";
     tabBar.alignment = ["fill", "top"];
     tabBar.spacing = 0;
-    tabBar.margins = [0, 6, 0, 0];
+    tabBar.margins = [0, 0, 0, 0];
     var tabNames = ["Assign null", "Precomp", "Move"];
     var tabBtns = [];
     var tabContents = [];
     var activeTab = 0;
-    // ── Content stack ──────────────────────────────────────────────────────────
+    // ── Content stack ─────────────────────────────────────────────────────────
     var contentGrp = win.add("group");
     contentGrp.orientation = "stack";
     contentGrp.alignment = ["fill", "fill"];
     contentGrp.alignChildren = ["fill", "top"];
-    contentGrp.margins = [0, GAP, 0, 0];
-    // ══════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     // Tab 1: Assign Null
-    // ══════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     var tab1 = contentGrp.add("group");
     tab1.orientation = "column";
     tab1.alignChildren = ["fill", "top"];
@@ -586,34 +558,33 @@ function buildUI(thisObj) {
     SectionLabel(tab1, "OPTIONS");
     var skipNullCb = CustomCheckbox(tab1, "Skip null layers", true);
     var descTxt = DescCard(tab1, "Each layer gets its own null\nmatched to its position.");
+    Separator(tab1);
     var assignBtn = CustomButton(tab1, "Assign null");
-    // Mode toggle logic
     modeToggle.onChange = function () {
-        var isShared = modeToggle.getValue() === 1;
-        nullNameInput.enabled = isShared;
-        descTxt.text = isShared
+        var shared = modeToggle.getValue() === 1;
+        nullNameInput.enabled = shared;
+        descTxt.text = shared
             ? "All selected layers share one null\npositioned at their average centre."
             : "Each layer gets its own null\nmatched to its position.";
     };
-    // Run
     assignBtn.onClick = function () {
         if (!app.project) {
-            alert("No project is open.");
+            alert("No project open.");
             return;
         }
         var comp = app.project.activeItem;
         if (!(comp instanceof CompItem)) {
-            alert("Please select a composition first.");
+            alert("Select a composition first.");
             return;
         }
-        var selected = comp.selectedLayers;
-        if (selected.length === 0) {
+        var sel = comp.selectedLayers;
+        if (sel.length === 0) {
             alert("No layers selected.");
             return;
         }
         var layers = [];
-        for (var i = 0; i < selected.length; i++)
-            layers.push(selected[i]);
+        for (var i = 0; i < sel.length; i++)
+            layers.push(sel[i]);
         app.beginUndoGroup("Assign Null to Selected Layers");
         var skipNulls = skipNullCb.getValue();
         var result;
@@ -621,76 +592,73 @@ function buildUI(thisObj) {
             result = runIndividual(comp, layers, skipNulls);
         }
         else {
-            var name = (nullNameInput.text || "Group_Null").replace(/^\s+|\s+$/g, "");
-            result = runShared(comp, layers, name || "Group_Null", skipNulls);
+            var nullName = (nullNameInput.text || "Group_Null").replace(/^\s+|\s+$/g, "") || "Group_Null";
+            result = runShared(comp, layers, nullName, skipNulls);
         }
         app.endUndoGroup();
         var msg = "Done!\n\nNulls created : " + result.created + "\nLayers skipped: " + result.skipped;
         if (result.skipped > 0)
-            msg += "\n\n(Skipped layers already had a null parent or were null layers.)";
+            msg += "\n\n(Skipped: already had null parent or were null layers.)";
         alert(msg);
     };
-    // ══════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     // Tab 2: Precomp
-    // ══════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     var tab2 = contentGrp.add("group");
     tab2.orientation = "column";
     tab2.alignChildren = ["fill", "top"];
     tab2.spacing = GAP;
     tab2.visible = false;
     tabContents.push(tab2);
-    DescCard(tab2, "Precomps each selected layer into its own composition, preserving the original name.");
+    DescCard(tab2, "Precomps each selected layer into its own composition, preserving the original layer name.");
+    Separator(tab2);
     var precompBtn = CustomButton(tab2, "Precomp individually");
     precompBtn.onClick = function () {
         if (!app.project) {
-            alert("No project is open.");
+            alert("No project open.");
             return;
         }
         var comp = app.project.activeItem;
         if (!(comp instanceof CompItem)) {
-            alert("Please select a composition first.");
+            alert("Select a composition first.");
             return;
         }
         runPrecomp(comp);
     };
-    // ══════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     // Tab 3: Move & Opacity
-    // ══════════════════════════════════════════════════════════════════════════
+    // ═════════════════════════════════════════════════════════════════════════
     var tab3 = contentGrp.add("group");
     tab3.orientation = "column";
     tab3.alignChildren = ["fill", "top"];
     tab3.spacing = GAP;
     tab3.visible = false;
     tabContents.push(tab3);
-    // Position section
     var posCb = CustomCheckbox(tab3, "Position", true);
     var posControls = tab3.add("group");
     posControls.orientation = "column";
     posControls.alignChildren = ["fill", "top"];
     posControls.spacing = GAP;
     var dirPad = DirectionPad(posControls);
-    // Distance + Frames side by side
     var dfRow = posControls.add("group");
     dfRow.orientation = "row";
-    dfRow.alignChildren = ["fill", "top"];
     dfRow.spacing = GAP;
     var distCol = dfRow.add("group");
     distCol.orientation = "column";
-    distCol.alignChildren = ["fill", "top"];
     distCol.spacing = 3;
+    distCol.alignChildren = ["fill", "top"];
     var distLbl = distCol.add("statictext", undefined, "Distance");
-    distLbl.graphics.foregroundColor = distLbl.graphics.newPen(distLbl.graphics.PenType.SOLID_COLOR, C.dim, 1);
+    distLbl.graphics.foregroundColor = distLbl.graphics.newPen(distLbl.graphics.PenType.SOLID_COLOR, DIM, 1);
     var distInput = StyledInput(distCol, "50", -1);
     var frsCol = dfRow.add("group");
     frsCol.orientation = "column";
-    frsCol.alignChildren = ["fill", "top"];
     frsCol.spacing = 3;
+    frsCol.alignChildren = ["fill", "top"];
     var frsLbl = frsCol.add("statictext", undefined, "Frames");
-    frsLbl.graphics.foregroundColor = frsLbl.graphics.newPen(frsLbl.graphics.PenType.SOLID_COLOR, C.dim, 1);
+    frsLbl.graphics.foregroundColor = frsLbl.graphics.newPen(frsLbl.graphics.PenType.SOLID_COLOR, DIM, 1);
     var frsInput = StyledInput(frsCol, "10", -1);
     var displaceCb = CustomCheckbox(posControls, "Displace", true);
     Separator(tab3);
-    // Opacity section
     var opCb = CustomCheckbox(tab3, "Opacity", false);
     var opControls = tab3.add("group");
     opControls.orientation = "column";
@@ -700,21 +668,15 @@ function buildUI(thisObj) {
     var opModeToggle = SegmentedToggle(opControls, ["0\u2192100", "100\u21920"], 0);
     var opFrsCol = opControls.add("group");
     opFrsCol.orientation = "column";
-    opFrsCol.alignChildren = ["fill", "top"];
     opFrsCol.spacing = 3;
+    opFrsCol.alignChildren = ["fill", "top"];
     var opFrsLbl = opFrsCol.add("statictext", undefined, "Frames");
-    opFrsLbl.graphics.foregroundColor = opFrsLbl.graphics.newPen(opFrsLbl.graphics.PenType.SOLID_COLOR, C.dim, 1);
+    opFrsLbl.graphics.foregroundColor = opFrsLbl.graphics.newPen(opFrsLbl.graphics.PenType.SOLID_COLOR, DIM, 1);
     var opFrsInput = StyledInput(opFrsCol, "10", -1);
     Separator(tab3);
     var applyBtn = CustomButton(tab3, "Apply");
-    // Enable/disable logic
-    posCb.onValueChange = function () {
-        posControls.enabled = posCb.getValue();
-    };
-    opCb.onValueChange = function () {
-        opControls.enabled = opCb.getValue();
-    };
-    // Apply
+    posCb.onValueChange = function () { posControls.enabled = posCb.getValue(); };
+    opCb.onValueChange = function () { opControls.enabled = opCb.getValue(); };
     function doApply() {
         var makePos = posCb.getValue();
         var makeOp = opCb.getValue();
@@ -727,7 +689,7 @@ function buildUI(thisObj) {
             dis = parseFloat(distInput.text);
             frs = parseInt(frsInput.text, 10);
             if (isNaN(dis)) {
-                alert("Distance must be a valid number.");
+                alert("Distance must be a number.");
                 return;
             }
             if (isNaN(frs) || frs < 0) {
@@ -743,69 +705,49 @@ function buildUI(thisObj) {
             }
         }
         applyMoveOp({
-            makePos: makePos,
-            posDir: dirPad.getValue(),
-            dis: dis,
-            frs: frs,
-            displaceFirst: displaceCb.getValue(),
-            makeOp: makeOp,
-            opMode: opModeToggle.getValue(),
-            opFrs: opFrs,
+            makePos: makePos, posDir: dirPad.getValue(),
+            dis: dis, frs: frs, displaceFirst: displaceCb.getValue(),
+            makeOp: makeOp, opMode: opModeToggle.getValue(), opFrs: opFrs,
         });
     }
     applyBtn.onClick = doApply;
-    // ── Tab bar drawing & switching ────────────────────────────────────────────
+    // ── Tab bar ───────────────────────────────────────────────────────────────
     function switchTab(index) {
         activeTab = index;
-        for (var i = 0; i < tabContents.length; i++) {
+        for (var i = 0; i < tabContents.length; i++)
             tabContents[i].visible = (i === index);
-        }
-        for (var j = 0; j < tabBtns.length; j++) {
-            tabBtns[j]._redraw();
+        for (var j = 0; j < tabBtns.length; j++)
             tabBtns[j].notify("onDraw");
-        }
     }
-    for (var t2 = 0; t2 < tabNames.length; t2++) {
+    for (var ti = 0; ti < tabNames.length; ti++) {
         (function (idx) {
             var tb = tabBar.add("customButton", undefined, "");
             tb.preferredSize = [-1, TAB_H];
             tb.text = tabNames[idx];
-            function redraw() {
-                var g = tb.graphics;
-                var isActive = activeTab === idx;
-                var bgBrush = g.newBrush(g.BrushType.SOLID_COLOR, C.bg);
-                var textPen = g.newPen(g.PenType.SOLID_COLOR, isActive ? C.text : C.dim, 1);
-                var linePen = g.newPen(g.PenType.SOLID_COLOR, C.white, 2);
-                var font = isActive
-                    ? ScriptUI.newFont("dialog", "BOLD", 11)
-                    : ScriptUI.newFont("dialog", "REGULAR", 11);
-                tb.onDraw = function () {
-                    var sz = this.size;
-                    var ts = g.measureString(tb.text, font);
-                    // background
+            tb.onDraw = function () {
+                var g = this.graphics;
+                var sz = this.size;
+                var isOn = activeTab === idx;
+                var fg = isOn ? TEXT : DIM;
+                var fnt = ScriptUI.newFont("dialog", isOn ? "BOLD" : "REGULAR", 11);
+                var ts = g.measureString(tb.text, fnt);
+                fillRect(g, BG, 0, 0, sz.width, sz.height);
+                drawText(g, tb.text, fg, (sz.width - ts.width) / 2, (sz.height - ts.height) / 2, fnt);
+                if (isOn) {
+                    var lpen = g.newPen(g.PenType.SOLID_COLOR, WHITE, 2);
                     g.newPath();
-                    g.rectPath(0, 0, sz.width, sz.height);
-                    g.fillPath(bgBrush);
-                    // label
-                    g.drawString(tb.text, textPen, (sz.width - ts.width) / 2, (sz.height - ts.height) / 2, font);
-                    // active underline
-                    if (isActive) {
-                        g.newPath();
-                        g.moveTo(0, sz.height - 2);
-                        g.lineTo(sz.width, sz.height - 2);
-                        g.strokePath(linePen);
-                    }
-                };
-            }
+                    g.moveTo(0, sz.height - 2);
+                    g.lineTo(sz.width, sz.height - 2);
+                    g.strokePath(lpen);
+                }
+            };
             tb.onClick = function () { switchTab(idx); };
-            tb._redraw = redraw;
-            redraw();
             tabBtns.push(tb);
-        })(t2);
+        })(ti);
     }
-    // Tab bar separator
+    // tab bar bottom separator
     Separator(win);
-    // ── Resize & show ──────────────────────────────────────────────────────────
+    // ── Resize & show ─────────────────────────────────────────────────────────
     win.onResizing = win.onResize = function () { win.layout.resize(); };
     if (win instanceof Window) {
         win.center();

@@ -149,8 +149,8 @@ function CustomCheckbox(parent, text, defaultChecked) {
         if (grp.onValueChange)
             grp.onValueChange();
     }
-    box.addEventListener("click", toggle);
-    lbl.addEventListener("click", toggle);
+    box.onClick = toggle;
+    lbl.onClick = toggle;
     redraw();
     grp.getValue = function () { return box._checked; };
     grp.setValue = function (v) {
@@ -184,7 +184,7 @@ function SegmentedToggle(parent, labels, defaultIdx) {
                     g.drawString(seg.text, pen, (sz.width - ts.width) / 2, (sz.height - ts.height) / 2);
                 };
             }
-            seg.addEventListener("click", function () {
+            seg.onClick = function () {
                 grp._selected = idx;
                 for (var j = 0; j < grp._btns.length; j++) {
                     grp._btns[j]._redraw();
@@ -192,7 +192,7 @@ function SegmentedToggle(parent, labels, defaultIdx) {
                 }
                 if (grp.onChange)
                     grp.onChange();
-            });
+            };
             seg._redraw = redraw;
             redraw();
             grp._btns.push(seg);
@@ -259,7 +259,7 @@ function DirectionPad(parent) {
                 g.drawString(ARROWS[dir], pen, (sz.width - ts.width) / 2, (sz.height - ts.height) / 2);
             };
         }
-        btn.addEventListener("click", function () {
+        btn.onClick = function () {
             active = dir;
             for (var i = 0; i < DIRS.length; i++) {
                 var d = DIRS[i];
@@ -270,7 +270,7 @@ function DirectionPad(parent) {
             }
             if (wrap.onChange)
                 wrap.onChange();
-        });
+        };
         btn._redraw = redraw;
         redraw();
         btns[dir] = btn;
@@ -596,7 +596,7 @@ function buildUI(thisObj) {
             : "Each layer gets its own null\nmatched to its position.";
     };
     // Run
-    assignBtn.addEventListener("click", function () {
+    assignBtn.onClick = function () {
         if (!app.project) {
             alert("No project is open.");
             return;
@@ -629,7 +629,7 @@ function buildUI(thisObj) {
         if (result.skipped > 0)
             msg += "\n\n(Skipped layers already had a null parent or were null layers.)";
         alert(msg);
-    });
+    };
     // ══════════════════════════════════════════════════════════════════════════
     // Tab 2: Precomp
     // ══════════════════════════════════════════════════════════════════════════
@@ -641,7 +641,7 @@ function buildUI(thisObj) {
     tabContents.push(tab2);
     DescCard(tab2, "Precomps each selected layer into its own composition, preserving the original name.");
     var precompBtn = CustomButton(tab2, "Precomp individually");
-    precompBtn.addEventListener("click", function () {
+    precompBtn.onClick = function () {
         if (!app.project) {
             alert("No project is open.");
             return;
@@ -652,7 +652,7 @@ function buildUI(thisObj) {
             return;
         }
         runPrecomp(comp);
-    });
+    };
     // ══════════════════════════════════════════════════════════════════════════
     // Tab 3: Move & Opacity
     // ══════════════════════════════════════════════════════════════════════════
@@ -753,11 +753,7 @@ function buildUI(thisObj) {
             opFrs: opFrs,
         });
     }
-    applyBtn.addEventListener("click", doApply);
-    win.addEventListener("keydown", function (e) {
-        if (e.keyName === "Enter")
-            doApply();
-    });
+    applyBtn.onClick = doApply;
     // ── Tab bar drawing & switching ────────────────────────────────────────────
     function switchTab(index) {
         activeTab = index;
@@ -801,7 +797,7 @@ function buildUI(thisObj) {
                     }
                 };
             }
-            tb.addEventListener("click", function () { switchTab(idx); });
+            tb.onClick = function () { switchTab(idx); };
             tb._redraw = redraw;
             redraw();
             tabBtns.push(tb);

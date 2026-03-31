@@ -156,8 +156,8 @@ function CustomCheckbox(parent: any, text: string, defaultChecked: boolean): any
         if (grp.onValueChange) grp.onValueChange();
     }
 
-    box.addEventListener("click", toggle);
-    lbl.addEventListener("click", toggle);
+    box.onClick = toggle;
+    lbl.onClick = toggle;
     redraw();
 
     grp.getValue = function(): boolean { return box._checked; };
@@ -198,14 +198,14 @@ function SegmentedToggle(parent: any, labels: string[], defaultIdx: number): any
                 };
             }
 
-            seg.addEventListener("click", function(): void {
+            seg.onClick = function(): void {
                 grp._selected = idx;
                 for (var j = 0; j < grp._btns.length; j++) {
                     grp._btns[j]._redraw();
                     grp._btns[j].notify("onDraw");
                 }
                 if (grp.onChange) grp.onChange();
-            });
+            };
 
             seg._redraw = redraw;
             redraw();
@@ -289,14 +289,14 @@ function DirectionPad(parent: any): any {
             };
         }
 
-        btn.addEventListener("click", function(): void {
+        btn.onClick = function(): void {
             active = dir;
             for (var i = 0; i < DIRS.length; i++) {
                 var d = DIRS[i];
                 if (btns[d]) { btns[d]._redraw(); btns[d].notify("onDraw"); }
             }
             if (wrap.onChange) wrap.onChange();
-        });
+        };
 
         btn._redraw = redraw;
         redraw();
@@ -644,7 +644,7 @@ function buildUI(thisObj: any): void {
     };
 
     // Run
-    assignBtn.addEventListener("click", function(): void {
+    assignBtn.onClick = function(): void {
         if (!app.project) { alert("No project is open."); return; }
         var comp = app.project.activeItem;
         if (!(comp instanceof CompItem)) { alert("Please select a composition first."); return; }
@@ -669,7 +669,7 @@ function buildUI(thisObj: any): void {
         var msg = "Done!\n\nNulls created : " + result.created + "\nLayers skipped: " + result.skipped;
         if (result.skipped > 0) msg += "\n\n(Skipped layers already had a null parent or were null layers.)";
         alert(msg);
-    });
+    };
 
     // ══════════════════════════════════════════════════════════════════════════
     // Tab 2: Precomp
@@ -685,12 +685,12 @@ function buildUI(thisObj: any): void {
     DescCard(tab2, "Precomps each selected layer into its own composition, preserving the original name.");
 
     var precompBtn: any = CustomButton(tab2, "Precomp individually");
-    precompBtn.addEventListener("click", function(): void {
+    precompBtn.onClick = function(): void {
         if (!app.project) { alert("No project is open."); return; }
         var comp = app.project.activeItem;
         if (!(comp instanceof CompItem)) { alert("Please select a composition first."); return; }
         runPrecomp(comp);
-    });
+    };
 
     // ══════════════════════════════════════════════════════════════════════════
     // Tab 3: Move & Opacity
@@ -806,10 +806,7 @@ function buildUI(thisObj: any): void {
         });
     }
 
-    applyBtn.addEventListener("click", doApply);
-    win.addEventListener("keydown", function(e: any): void {
-        if (e.keyName === "Enter") doApply();
-    });
+    applyBtn.onClick = doApply;
 
     // ── Tab bar drawing & switching ────────────────────────────────────────────
 
@@ -859,7 +856,7 @@ function buildUI(thisObj: any): void {
                 };
             }
 
-            tb.addEventListener("click", function(): void { switchTab(idx); });
+            tb.onClick = function(): void { switchTab(idx); };
             tb._redraw = redraw;
             redraw();
             tabBtns.push(tb);

@@ -275,7 +275,7 @@ html, body {
 .dir-pad {
   display: grid;
   grid-template-columns: repeat(3, 34px);
-  grid-template-rows: repeat(3, 34px);
+  grid-template-rows: repeat(2, 34px);
   gap: 4px;
   justify-content: center;
 }

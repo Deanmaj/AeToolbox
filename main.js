@@ -88,6 +88,7 @@ var posCb = makeCheckbox('pos-box', true, function(checked) {
   $('pos-controls').style.opacity    = checked ? '1' : '0.4';
   $('pos-controls').style.pointerEvents = checked ? 'auto' : 'none';
 });
+var easeCb      = makeCheckbox('ease-box', false, null);
 var displaceCb  = makeCheckbox('displace-box', true, null);
 var opCb = makeCheckbox('op-box', false, function(checked) {
   var ctrl = $('op-controls');
@@ -148,23 +149,25 @@ $('apply-btn').addEventListener('click', function() {
     return;
   }
 
-  var dis     = parseFloat($('distance').value)   || 0;
-  var frs     = parseInt($('pos-frames').value, 10) || 0;
-  var opFrs   = parseInt($('op-frames').value,  10) || 0;
-  var opMode  = opModeToggle.getValue();
+  var dis      = parseFloat($('distance').value)    || 0;
+  var frs      = parseInt($('pos-frames').value, 10) || 0;
+  var opFrs    = parseInt($('op-frames').value,  10) || 0;
+  var opMode   = opModeToggle.getValue();
   var displace = displaceCb.getValue();
+  var ease     = easeCb.getValue();
 
   if (makePos && isNaN(dis))           { alert('Distance must be a number.');             return; }
   if (makePos && (isNaN(frs) || frs < 0)) { alert('Frames must be a non-negative integer.'); return; }
   if (makeOp  && (isNaN(opFrs) || opFrs < 0)) { alert('Opacity frames must be a non-negative integer.'); return; }
 
   var script = 'aeMoveOp('
-    + (makePos ? 'true' : 'false') + ','
+    + (makePos   ? 'true' : 'false') + ','
     + '"' + activeDir + '",'
     + dis + ','
     + frs + ','
-    + (displace ? 'true' : 'false') + ','
-    + (makeOp  ? 'true' : 'false') + ','
+    + (displace  ? 'true' : 'false') + ','
+    + (ease      ? 'true' : 'false') + ','
+    + (makeOp    ? 'true' : 'false') + ','
     + opMode + ','
     + opFrs
     + ')';

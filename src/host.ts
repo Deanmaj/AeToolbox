@@ -185,7 +185,7 @@ function aePrecomp(): string {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function aeMoveOp(makePos: boolean, posDir: string, dis: number, frs: number, displaceFirst: boolean,
-                  makeOp: boolean, opMode: number, opFrs: number): string {
+                  ease: boolean, makeOp: boolean, opMode: number, opFrs: number): string {
     try {
         var comp = app.project.activeItem;
         if (!(comp instanceof CompItem)) return "err:No active composition.";
@@ -213,6 +213,26 @@ function aeMoveOp(makePos: boolean, posDir: string, dis: number, frs: number, di
                     posProp.setValueAtTime(t,      orig as any);
                     posProp.setValueAtTime(endPos, computeOffset(orig, posDir, dis, false) as any);
                 }
+
+                if (ease) {
+                    var easeObj  = new KeyframeEase(0, 100);
+                    var startIdx = posProp.nearestKeyIndex(t);
+                    var endIdx   = posProp.nearestKeyIndex(endPos);
+                    var easeCandidates: KeyframeEase[][] = [
+                        [easeObj, easeObj],
+                        [easeObj, easeObj, easeObj],
+                        [easeObj]
+                    ];
+                    for (var ec = 0; ec < easeCandidates.length; ec++) {
+                        try {
+                            var ea = easeCandidates[ec];
+                            posProp.setTemporalEaseAtKey(startIdx, ea as any, ea as any);
+                            posProp.setTemporalEaseAtKey(endIdx,   ea as any, ea as any);
+                            break;
+                        } catch (easeErr) {}
+                    }
+                }
+
                 posProp.selected = true;
             }
 

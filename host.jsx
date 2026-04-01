@@ -198,7 +198,7 @@ function aePrecomp() {
 // ─────────────────────────────────────────────────────────────────────────────
 // Move & Opacity
 // ─────────────────────────────────────────────────────────────────────────────
-function aeMoveOp(makePos, posDir, dis, frs, displaceFirst, makeOp, opMode, opFrs) {
+function aeMoveOp(makePos, posDir, dis, frs, displaceFirst, ease, makeOp, opMode, opFrs) {
     try {
         var comp = app.project.activeItem;
         if (!(comp instanceof CompItem))
@@ -228,6 +228,25 @@ function aeMoveOp(makePos, posDir, dis, frs, displaceFirst, makeOp, opMode, opFr
                 else {
                     posProp.setValueAtTime(t, orig);
                     posProp.setValueAtTime(endPos, computeOffset(orig, posDir, dis, false));
+                }
+                if (ease) {
+                    var easeObj = new KeyframeEase(0, 100);
+                    var startIdx = posProp.nearestKeyIndex(t);
+                    var endIdx = posProp.nearestKeyIndex(endPos);
+                    var easeCandidates = [
+                        [easeObj, easeObj],
+                        [easeObj, easeObj, easeObj],
+                        [easeObj]
+                    ];
+                    for (var ec = 0; ec < easeCandidates.length; ec++) {
+                        try {
+                            var ea = easeCandidates[ec];
+                            posProp.setTemporalEaseAtKey(startIdx, ea, ea);
+                            posProp.setTemporalEaseAtKey(endIdx, ea, ea);
+                            break;
+                        }
+                        catch (easeErr) { }
+                    }
                 }
                 posProp.selected = true;
             }
